@@ -1,4 +1,4 @@
-package com.cheezycode.notesample
+package com.hiltmvvm.notesample
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

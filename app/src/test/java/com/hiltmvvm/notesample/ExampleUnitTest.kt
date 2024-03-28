@@ -1,4 +1,4 @@
-package com.cheezycode.notesample
+package com.hiltmvvm.notesample
 
 import org.junit.Test
 
