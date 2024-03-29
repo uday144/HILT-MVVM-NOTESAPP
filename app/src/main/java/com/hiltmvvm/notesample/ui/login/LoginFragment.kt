@@ -14,7 +14,9 @@ import com.hiltmvvm.notesample.databinding.FragmentLoginBinding
 import com.hiltmvvm.notesample.models.UserRequest
 import com.hiltmvvm.notesample.utils.Helper
 import com.hiltmvvm.notesample.utils.NetworkResult
+import com.hiltmvvm.notesample.utils.TokenManager
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
@@ -23,6 +25,10 @@ class LoginFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val authViewModel by activityViewModels<AuthViewModel>()
+
+    @Inject
+    lateinit var tokenManager: TokenManager
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -75,6 +81,7 @@ class LoginFragment : Fragment() {
             binding.progressBar.isVisible = false
             when (it) {
                 is NetworkResult.Success -> {
+                    tokenManager.saveToken(it.data!!.token)
                     findNavController().navigate(R.id.action_loginFragment_to_mainFragment)
                 }
                 is NetworkResult.Error -> {

@@ -14,7 +14,9 @@ import com.hiltmvvm.notesample.databinding.FragmentRegisterBinding
 import com.hiltmvvm.notesample.models.UserRequest
 import com.hiltmvvm.notesample.utils.Helper
 import com.hiltmvvm.notesample.utils.NetworkResult
+import com.hiltmvvm.notesample.utils.TokenManager
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class RegisterFragment : Fragment() {
@@ -23,11 +25,18 @@ class RegisterFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val authViewModel by activityViewModels<AuthViewModel>()
+
+    @Inject
+    lateinit var tokenManager: TokenManager
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentRegisterBinding.inflate(inflater, container, false)
+        if (tokenManager.getToken() != null) {
+            findNavController().navigate(R.id.action_registerFragment_to_mainFragment)
+        }
         return binding.root
     }
 
@@ -78,6 +87,7 @@ class RegisterFragment : Fragment() {
             binding.progressBar.isVisible = false
             when (it) {
                 is NetworkResult.Success -> {
+                    tokenManager.saveToken(it.data!!.token)
                     findNavController().navigate(R.id.action_registerFragment_to_mainFragment)
                 }
                 is NetworkResult.Error -> {
