@@ -5,11 +5,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.hiltmvvm.notesample.R
 import com.hiltmvvm.notesample.databinding.FragmentRegisterBinding
 import com.hiltmvvm.notesample.models.UserRequest
+import com.hiltmvvm.notesample.utils.NetworkResult
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -36,6 +39,26 @@ class RegisterFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        authViewModel.userResponseLiveData.observe(viewLifecycleOwner, Observer {
+            binding.progressBar.isVisible = false
+            when(it){
+                is NetworkResult.Success -> {
+                    // Token
+                    findNavController().navigate(R.id.action_registerFragment_to_mainFragment)
+                }
+                is NetworkResult.Error -> {
+                    binding.txtError.text = it.message
+                }
+                is NetworkResult.Loading -> {
+                    binding.progressBar.isVisible = true
+                }
+            }
+
+        })
     }
 
     override fun onDestroyView() {
