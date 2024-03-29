@@ -26,12 +26,12 @@ class RegisterFragment : Fragment() {
         _binding = FragmentRegisterBinding.inflate(inflater, container, false)
 
         binding.btnLogin.setOnClickListener {
-            authViewModel.loginUser(UserRequest("test@gmail.com", "123321", "test123"))
+            authViewModel.loginUser(UserRequest("test144@gmail.com", "123321", "test144"))
           //  findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
         }
 
         binding.btnSignUp.setOnClickListener {
-            authViewModel.registerUser(UserRequest("test@gmail.com", "123321", "test123"))
+            authViewModel.registerUser(UserRequest("test144@gmail.com", "123321", "test144"))
           //  findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
         }
 
