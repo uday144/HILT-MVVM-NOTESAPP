@@ -11,7 +11,7 @@ import javax.inject.Inject
 @HiltViewModel
 class NoteViewModel @Inject constructor(private val noteRepository: NoteRepository) : ViewModel() {
 
-    val notesLiveData get() = noteRepository.notesLiveData
+    val notesFlow get() = noteRepository.notesFlow
     val statusLiveData get() = noteRepository.statusLiveData
 
     fun createNote(noteRequest: NoteRequest) {

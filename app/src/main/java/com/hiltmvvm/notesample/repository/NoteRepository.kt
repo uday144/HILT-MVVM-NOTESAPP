@@ -5,14 +5,15 @@ import com.hiltmvvm.notesample.api.NoteAPI
 import com.hiltmvvm.notesample.models.NoteRequest
 import com.hiltmvvm.notesample.models.NoteResponse
 import com.hiltmvvm.notesample.utils.NetworkResult
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.json.JSONObject
 import retrofit2.Response
 import javax.inject.Inject
 
 class NoteRepository @Inject constructor(private val noteAPI: NoteAPI) {
 
-    private val _notesLiveData = MutableLiveData<NetworkResult<List<NoteResponse>>>()
-    val notesLiveData get() = _notesLiveData
+    private val _notesFlow = MutableStateFlow<NetworkResult<List<NoteResponse>>>(NetworkResult.Loading())
+    val notesFlow get() = _notesFlow
 
     private val _statusLiveData = MutableLiveData<NetworkResult<Pair<Boolean, String>>>()
     val statusLiveData get() = _statusLiveData
@@ -24,15 +25,14 @@ class NoteRepository @Inject constructor(private val noteAPI: NoteAPI) {
     }
 
     suspend fun getNotes() {
-        _notesLiveData.postValue(NetworkResult.Loading())
         val response = noteAPI.getNotes()
         if (response.isSuccessful && response.body() != null) {
-            _notesLiveData.postValue(NetworkResult.Success(response.body()!!))
+            _notesFlow.emit(NetworkResult.Success(response.body()!!))
         } else if (response.errorBody() != null) {
             val errorObj = JSONObject(response.errorBody()!!.charStream().readText())
-            _notesLiveData.postValue(NetworkResult.Error(errorObj.getString("message")))
+            _notesFlow.emit(NetworkResult.Error(errorObj.getString("message")))
         } else {
-            _notesLiveData.postValue(NetworkResult.Error("Something Went Wrong"))
+            _notesFlow.emit(NetworkResult.Error("Something Went Wrong"))
         }
     }
 
